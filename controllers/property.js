@@ -35,6 +35,34 @@ class Controller {
         return next(err);
       });
   }
+
+  static findSome(req, res, next) {
+    let { province, type, status } = req.params;
+    Property.findAll({
+      where: {
+        province,
+        type,
+        status,
+      },
+      include: [User],
+    })
+      .then((result) => {
+        if (result) {
+          return res.status(200).json({
+            result,
+            message: "Found",
+          });
+        } else {
+          return next({
+            name: "NotFound",
+            errors: [{ message: "User Not Found " }],
+          });
+        }
+      })
+      .catch((err) => {
+        return next(err);
+      });
+  }
 }
 
 module.exports = Controller;
